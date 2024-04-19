@@ -1,0 +1,198 @@
+.App {
+	font-family: "Karla", sans-serif;
+	width: 90%;
+	margin: 2% auto;
+	box-shadow: 0px 2.98256px 7.4564px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	background-color: #fff;
+}
+
+/* Header Component */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #333;
+    color: white;
+    border-radius: 10px 10px 0px 0px; /* Rounds only the top corners */
+}
+
+.header-image {
+    width: 50px;
+    transition: transform 0.3s ease;
+}
+
+.header-image:hover {
+    transform: rotate(360deg);
+}
+
+.navbar {
+    display: flex;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: #ff6347; /* Tomato color for hover state */
+}
+
+
+/* Header Component */
+
+/* Meme Component */
+main {
+	padding: 5%;
+	display: flex;
+	flex-direction: column;
+}
+
+.form {
+	display: grid;
+	grid-template: 40px 40px / 1fr 1fr;
+	gap: 1em;
+}
+
+.form-input {
+	font-family: "Karla", sans-serif;
+	border-radius: 5px;
+	border: 1px solid #D5D4D8;
+	text-indent: 5px;
+}
+
+.form-button {
+	grid-column: 1 / -1;
+	background-image: linear-gradient(315deg, #f8de7e 0%, #d99058 74%);
+	font-family: "Karla", sans-serif;
+	border-radius: 5px;
+	font-weight: 500;
+	color: #351600;
+	border: none;
+	cursor: pointer;
+}
+
+.meme {
+	position: relative;
+	margin-top: 2em;
+	align-self: center;
+}
+
+.meme-image {
+	max-width: 100%;
+
+}
+
+.meme-text {
+	position: absolute;
+	width: 80%;
+	text-align: center;
+	left: 50%;
+	transform: translateX(-50%);
+	margin: 15px 0;
+	padding: 0 5px;
+	font-family: impact, sans-serif;
+	font-size: 2em;
+	text-transform: uppercase;
+	color: white;
+	letter-spacing: 1px;
+	text-shadow:
+		2px 2px 0 #000,
+		-2px -2px 0 #000,
+		2px -2px 0 #000,
+		-2px 2px 0 #000,
+		0 2px 0 #000,
+		2px 0 0 #000,
+		0 -2px 0 #000,
+		-2px 0 0 #000,
+		2px 2px 5px #000;
+}
+
+.bottom {
+	bottom: 0;
+}
+
+.top {
+	top: 0;
+}
+
+/* Meme Component */
+
+/* Footer Component */
+footer {
+	text-align: center;
+	font-size: 1em;
+	color: #351600;
+	background-color: aliceblue;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-top: 2px solid #f3f2f7;
+	margin-top: 1em;
+}
+
+footer p {
+	padding: 0.7em 0;
+	margin: 0;
+}
+
+footer a {
+	text-decoration: none;
+	color: #00adaa;
+}
+
+footer a:hover {
+	filter: opacity(40%);
+}
+
+/* Footer Component */
+
+
+@media only screen and (max-width: 600px) {
+	.meme-text {
+		font-size: 1.55em;
+	}
+}
+
+/* src/styles/Hero.css */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px; /* Adjusted for better fit */
+    width: 100%;
+    background-size: cover; /* Ensure the background covers the entire div */
+    background-position: center; /* Center the background image */
+    text-align: center;
+    color: white; /* Adjust text color for better visibility on a potentially busy background */
+}
+
+.hero h1 {
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+}
+
+.hero p {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.hero-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
