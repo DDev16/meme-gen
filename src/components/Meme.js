@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import Draggable from 'react-draggable';
 import { Button, Slider, Tooltip, FormControl, InputLabel, Select, MenuItem, ListItemIcon, ListItemText, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,61 +6,26 @@ import { ResizableBox } from 'react-resizable';
 import { NFTStorage, File } from 'nft.storage';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import { ethers, Contract } from 'ethers';
+import useFetchMemes from '../hooks/useFetch.js';
+import troll from '../images/troll-face.png';
+import NFTContractABI from '../abi/abi.json';
 
-const NFTContractABI = [
-  'function mint(string memory tokenURI) public returns (uint256)'
-];
-const NFTContractAddress = 'YOUR_CONTRACT_ADDRESS'; // Replace with your contract address
 
-const apiKey = 'YOUR_NFT_STORAGE_API_KEY';
+const NFTContractAddress = '0xd0F350b13465B5251bb03E4bbf9Fa1DbC4a378F3'; // Replace with your contract address
+
+const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDdGOTA4QjNBRDJGMDFGNjE2MjU1MTA0ODIwNjFmNTY5Mzc2QTg3MjYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcxMzU4Njk1NzQ5MSwibmFtZSI6Ik1lbWUtR2VuZXJhdG9yIn0.UI_DOmqXLzecZO3ZB_T2wAgcmTDOZZSO4i2cJqgrcAQ';
 const client = new NFTStorage({ token: apiKey });
 
 const stickers = [
-  { src: 'path_to_trollface.png', name: 'Troll Face' },
+  { src: troll, name: 'Troll Face' },
   { src: 'path_to_forever-alone.png', name: 'Forever Alone' },
   { src: 'path_to_okay.png', name: 'Okay' },
   // Add more stickers here
 ];
 
-function useFetchMemes() {
-  const [allMemes, setAllMemes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function fetchMemes() {
-      try {
-        const responses = await Promise.all([
-          fetch("https://api.imgflip.com/get_memes"),
-          fetch("https://api.memegen.link/templates/")
-        ]);
-        const imgflipData = await responses[0].json();
-        const memegenData = await responses[1].json();
-
-        const imgflipMemes = imgflipData.data.memes.map(meme => ({
-          url: meme.url,
-          name: meme.name
-        }));
-        const memegenMemes = memegenData.map(template => ({
-          url: `https://api.memegen.link/images/${template.id}.png`,
-          name: template.name
-        }));
-
-        setAllMemes([...imgflipMemes, ...memegenMemes]);
-      } catch (error) {
-        console.error("Failed to fetch memes:", error);
-        setError(error);
-      }
-      setLoading(false);
-    }
-
-    fetchMemes();
-  }, []);
-
-  return { allMemes, loading, error };
-}
 
 function Meme() {
+    
   const { allMemes, loading, error } = useFetchMemes();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
@@ -72,8 +37,8 @@ function Meme() {
     topY: 0,
     bottomX: 0,
     bottomY: 0,
-    topRotation: 0,
-    bottomRotation: 0,
+    topRotation: 0,  // Add this for top text rotation
+    bottomRotation: 0,  // Add this for bottom text rotation
     textColor: "#FFFFFF",
     textFont: "Arial",
     textSize: 16,
@@ -88,48 +53,65 @@ function Meme() {
 
   const handleMint = async () => {
     if (!isConnected) {
-      alert('Please connect your wallet first!');
-      return;
+        alert('Please connect your wallet first!');
+        return;
     }
 
     const imageUrl = meme.customImage || meme.randomImage;
     if (!imageUrl) {
-      alert('No image selected for minting!');
-      return;
+        alert('No image selected for minting!');
+        return;
     }
 
     try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const metadata = {
-        name: meme.name,
-        description: meme.description,
-        image: new File([blob], 'meme.png', { type: 'image/png' })
-      };
-      const tokenURI = await storeMeme(metadata);
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
 
-      const provider = new ethers.providers.Web3Provider(walletProvider);
-      const signer = provider.getSigner();
-      const NFTContract = new Contract(NFTContractAddress, NFTContractABI, signer);
-      const tx = await NFTContract.mint(tokenURI);
-      await tx.wait();
-      alert('Meme minted as NFT successfully!');
+        const metadata = {
+            name: meme.name,
+            description: meme.description
+        };
+
+        const tokenURI = await storeMeme(metadata, blob);
+
+        const provider = new ethers.providers.Web3Provider(walletProvider);
+        const signer = provider.getSigner();
+        const nftContract = new ethers.Contract(NFTContractAddress, NFTContractABI, signer);
+
+        const tx = await nftContract.mintNFT(tokenURI);
+        await tx.wait();
+        alert('Meme minted as NFT successfully!');
     } catch (error) {
-      console.error('Failed to mint NFT:', error);
-      alert('Failed to mint NFT. See console for details.');
+        console.error('Failed to mint NFT:', error);
+        alert('Failed to mint NFT. See console for details.');
     }
-  };
+};
 
-  const storeMeme = async (metadata) => {
+
+const storeMeme = async (metadata, imageBlob) => {
     try {
-      const storedData = await client.store(metadata);
-      console.log('Stored data:', storedData);
-      return storedData.url;
+        const imageFile = new File([imageBlob], 'meme.png', { type: 'image/png' });
+        metadata.image = imageFile; // Adding the image file to the metadata
+
+        const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+        console.log("Sending the following metadata to NFT.storage:", JSON.stringify(metadata, null, 2));
+        // Please note: Console logging the Blob directly won't show its contents. You might want to log the metadata object before converting it to a Blob.
+
+        const stored = await client.storeBlob(metadataBlob); // Assumes client.storeBlob handles File objects within the metadata properly.
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            console.log('Image File Contents:', reader.result);
+        };
+        reader.readAsDataURL(imageFile);
+        // Generate the complete IPFS URI using the returned CID
+        const tokenURI = `ipfs://${stored}`;
+        return tokenURI;
     } catch (error) {
-      console.error('Failed to store meme:', error);
-      throw new Error('Failed to store meme');
+        console.error('Failed to store metadata:', error);
+        throw new Error('Failed to store metadata');
     }
-  };
+};
+
 
   const shadows = [ 
     '2px 2px 2px black',
@@ -155,9 +137,9 @@ function Meme() {
           chainId === 19 ? "songbird mainnet" :
           chainId === 14 ? "flare mainnet" :
           chainId === 16 ? "Coston Testnet" :
+          chainId === 31337 ? "Localhost" : 
           "an unknown network"}. </p>
-        <p>Wallet Address: {address}</p>
-      </div>
+                </div>
     );
   };
 
@@ -191,7 +173,7 @@ function Meme() {
     setMeme(prevMeme => ({
       ...prevMeme,
       [name]: value,
-      history: [...prevMeme.history, prevMeme]
+      history: [...prevMeme.history, prevMeme]  // Keep your history management
     }));
   };
 
@@ -271,6 +253,7 @@ function Meme() {
                 <Tooltip title="Upload your own image">
                     <input type="file" accept="image/*" onChange={handleImageUpload} />
                 </Tooltip>
+                
                 <FormControl fullWidth>
                     <InputLabel id="font-label">Font</InputLabel>
                     <Select

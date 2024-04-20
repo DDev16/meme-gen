@@ -8,44 +8,71 @@
 }
 
 /* Header Component */
-
+/* Base styles for desktop */
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
-    background: #333;
-    color: white;
-    border-radius: 10px 10px 0px 0px; /* Rounds only the top corners */
+	background-color: #333;
 }
 
 .header-image {
-    width: 50px;
-    transition: transform 0.3s ease;
-}
-
-.header-image:hover {
-    transform: rotate(360deg);
-}
-
-.navbar {
-    display: flex;
+    height: 50px; /* Adjust size as needed */
 }
 
 .nav-links {
-    list-style: none;
     display: flex;
-    gap: 20px;
+    list-style: none;
 }
 
-.nav-links li a {
-    color: white;
+.nav-links li {
+    padding: 0 15px;
+
+}
+
+.nav-links a {
     text-decoration: none;
-    transition: color 0.3s ease;
+    color: #fff;
 }
 
-.nav-links li a:hover {
-    color: #ff6347; /* Tomato color for hover state */
+.active a {
+    color: #007bff;
+}
+
+/* On hover, change the color of the link */
+.nav-links a:hover {
+	color: #007bff;
+}
+
+
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%; /* Full width nav links on mobile */
+		color: #f3f2f7;
+
+    }
+
+    .nav-links li {
+        width: 100%; /* Each link takes full width of the nav */
+        text-align: center; /* Center align text */
+        padding: 10px 0; /* Larger touch targets */
+		border-top: 1px solid #f3f2f7; /* Add a border between links */
+		color: #f3f2f7;
+    }
+
+    .header-image {
+        margin-bottom: 10px; /* Space between logo and nav */
+    }
+	
 }
 
 
@@ -179,6 +206,7 @@ footer a:hover {
 
 .hero h1 {
     margin-bottom: 20px;
+	background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background to the text for better readability */
     font-size: 2.5rem;
 }
 

@@ -1,12 +1,13 @@
 // src/components/Hero.js
 import React from 'react';
 import '../styles/App.css'; // Import the global styles
+import mme from "../images/mme.webp";
 function Hero() {
     // Example using an online URL, replace it with your actual image URL
-    const backgroundImageUrl = "https://images.unsplash.com/photo-1558981359-219d6364c9c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80";
+    const backgroundImageUrl = mme; 
 
     return (
-        <div className="hero" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>
+        <div className="hero" style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>         
             <h1>Welcome to MemeNFT!</h1>
             <p>Create, share, and mint your memes into NFTs directly from your browser.</p>
             <button className="hero-button">Get Started</button>
